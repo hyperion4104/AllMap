@@ -1,5 +1,5 @@
 let map;
-var markers = [];
+let markers = [];
 
 async function initMap(){
     const { Map } = await google.maps.importLibrary("maps");
@@ -116,11 +116,33 @@ async function initMap(){
                 `<a style = "line-height:5px;" href="${props.url.report}">More Information</a>`);
             infoWindow.open(map,markers[thisCount]);
         });
-        
-            
         count++;
     }
-    
+    naturalDisasters = document.getElementById("naturalDisasters");
+
+    naturalDisasters.addEventListener('change', e => {
+        if(e.target.checked === true) {
+            for(i = 0; i < markers.length; i++){
+                markers[i].setMap(map);
+            }
+        }
+        if(e.target.checked === false) {
+            for(var marker of markers){
+                marker.setMap(null);
+            }
+        }
+    });
+
+    const heatmapLayer = new google.maps.ImageMapType({
+        getTileUrl: function (coord, zoom) {
+          const url = `https://airquality.googleapis.com/v1/mapTypes/US_AQI/heatmapTiles/${zoom}/${coord.x}/${coord.y}?key=AIzaSyDsBSeMgofR0qjmOOBcJWCfh-1KeEuA8JM`;
+          return url;
+        },
+        tileSize: new google.maps.Size(256, 256),
+        opacity: 0.7,
+      });
+    map.overlayMapTypes.push(heatmapLayer);
+
 }
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
