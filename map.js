@@ -1,6 +1,6 @@
 let map;
 let markers = [];
-
+let heatmapData = [];
 async function initMap(){
     const { Map } = await google.maps.importLibrary("maps");
     const map = new google.maps.Map(document.getElementById("map"), {
@@ -9,9 +9,10 @@ async function initMap(){
         mapId:'5216e0e972dcd987',
         mapTypeControl: false,
         disableDefaultUI: true,
-        streetViewControl: false
+        streetViewControl: false,
+        minZoom: 2.5,
     });
-
+    
     const url = "https://www.gdacs.org/gdacsapi/api/events/geteventlist/EVENTS4APP";
     const eq = "./eq.png";
     const fl = "./fl.png";
@@ -64,7 +65,6 @@ async function initMap(){
         const eventTrueName = eventName;
 
         markers[thisCount] = new google.maps.Marker({
-            map,
             position: {lat: cords[1], lng: cords[0]},
             icon: image
         });
@@ -132,17 +132,41 @@ async function initMap(){
             }
         }
     });
+    const response2 = await fetch("https://api.waqi.info/v2/map/bounds?latlng=-90,-180,90,180&networks=all&token=4f412fe29c1a5d066aad9d6d0d2e56571b4ab97d");
+    const data2 = await response2.json();
+    const logs = data2.data;
 
-    const heatmapLayer = new google.maps.ImageMapType({
-        getTileUrl: function (coord, zoom) {
-          const url = `https://airquality.googleapis.com/v1/mapTypes/US_AQI/heatmapTiles/${zoom}/${coord.x}/${coord.y}?key=AIzaSyDsBSeMgofR0qjmOOBcJWCfh-1KeEuA8JM`;
-          return url;
-        },
-        tileSize: new google.maps.Size(256, 256),
-        opacity: 0.7,
+    for (i = 0; i < logs.length; i++){
+        var aqi = logs[i].aqi;
+        var weight;
+
+        if(aqi < 50) weight = 0;
+        else if (aqi < 100) weight = 1;
+        else if (aqi < 150) weight = 2;
+        else if (aqi < 200) weight = 3;
+        else if (aqi < 300) weight = 5;
+        else weight = 3;
+
+        heatmapData[i] = {
+            location: new google.maps.LatLng(logs[i].lat,logs[i].lon),
+            weight: weight
+        };
+    }
+    var heatmap = new google.maps.visualization.HeatmapLayer({
+        data: heatmapData,
+        radius: 20
       });
-    map.overlayMapTypes.push(heatmapLayer);
+    console.log(logs);
+    airQuality = document.getElementById("airQuality");
 
+    airQuality.addEventListener('change', e => {
+        if(e.target.checked === true) {
+            heatmap.setMap(map);
+        }
+        if(e.target.checked === false) {
+            heatmap.setMap(null);
+        }
+    });
 }
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

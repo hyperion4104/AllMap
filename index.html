@@ -3,33 +3,62 @@
 <head>
     <title>All Map</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-
     <link rel="stylesheet" href="style.css">
-    <title>Overlay Checkbox</title>
     <style>
-        /* Style for the overlay container */
         .overlay-container {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100px;
-            height: 30%;
-            background-color: rgba(354, 333, 333, 1); /* Semi-transparent black overlay */
+            width: 9%;
+            height: 3%;
+            background-color: rgba(354, 333, 333, 1);
             display: flex;
-            justify-content: center;
+            justify-content: left;
             align-items: center;
+        }
+        .user {
+            position: fixed;
+            align-items: center;
+            color: beige;
+            margin: auto;
+            width: 100%;
+            text-align: center;
+        }
+        label {
+            display: block;
+            padding-left: 15px;
+            text-indent: -15px;
+        }
+
+        input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            padding: 0;
+            margin: 0;
+            vertical-align: top;
+            position: relative;
+            top: -1px;
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <div class = "overlay-container" id = "checkboxes">
-        <input type="checkbox" id="naturalDisasters" checked> Natural Disasters <br>
+    <div class="overlay-container" id="checkboxes">
+        <label for="naturalDisasters">
+            <input type="checkbox" id="naturalDisasters"/> Natural Disasters  
+        </label>
+        <br>
+        <label for="airQuality">
+            <input type="checkbox" id="airQuality"/> Air Quality  
+        </label>
     </div>
-    <script src = "map.js"></script>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsBSeMgofR0qjmOOBcJWCfh-1KeEuA8JM&map_ids=5216e0e972dcd987&callback=initMap" 
-    ></script>
+    <script src="map.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsBSeMgofR0qjmOOBcJWCfh-1KeEuA8JM&map_ids=5216e0e972dcd987&libraries=visualization&callback=initMap"></script>
+    <div class="user" id ="user">
+        <P id="result"></P>
+        <button onclick="window.location='about.html';">About This Website</button>
+    </div>
+    <script src="ipGet.js"></script>
     
 </body>
 </html>

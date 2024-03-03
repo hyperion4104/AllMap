@@ -5,9 +5,9 @@ html {
 body{
     margin: 0;
     padding: 0;
-    background-color: #ffffff;
+    background-color: #222C44;
 }
 #map{
-    height:100vh;
+    height:90vh;
     width:100%;
 }
